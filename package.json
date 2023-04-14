@@ -1,0 +1,87 @@
+{
+  "name": "commentsai",
+  "displayName": "CommentsAI",
+  "description": "Generate commentaries automatically directly to your code",
+  "icon": "./icons/LipsIcon.jpg",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.77.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "commentsai.commentCode",
+        "title": "Comment Code",
+        "category": "CommentsAI",
+        "icon": {
+          "light": "/icons/icons8-lips-60_black.png",
+          "dark": "/icons/icons8-lips-60_white.png"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "commentsai.commentCode",
+          "group": "navigation",
+          "when": "editorTextFocus"
+        }
+      ]
+    },
+    "configuration": [
+      {
+        "title": "CommentsAI",
+        "properties": {
+          "commentsai.apiKey": {
+            "type": "string",
+            "default": "",
+            "description": "API key for OpenAI API."
+          },
+          "commentsai.model": {
+            "type": "string",
+            "default": "gpt-3.5-turbo",
+            "description": "Model to use for generating comments.",
+            "enum": [
+              "gpt-3.5-turbo",
+              "text-davinci-003"
+            ]
+          },
+          "commentsai.maxTokens": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum number of tokens for the generated comment."
+          },
+          "commentsai.temperature": {
+            "type": "number",
+            "default": 0.5,
+            "description": "Creativity of the model (lower value means more consistent responses)."
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "yarn run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.77.0",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.36.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "openai": "^3.2.1"
+  }
+}
