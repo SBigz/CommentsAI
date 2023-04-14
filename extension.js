@@ -9,6 +9,10 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 // Fonction pour générer un commentaire concis pour le code donné
+/**
+ * @param {string} code
+ * @param {string} language
+ */
 async function commentCode(code, language) {
   try {
     // Crée une requête d'achèvement avec le modèle, le code et la langue
