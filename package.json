@@ -3,6 +3,10 @@
   "displayName": "CommentsAI",
   "description": "Generate commentaries automatically directly to your code",
   "icon": "./icons/LipsIcon.jpg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SBigz/commentsai.git"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.77.0"

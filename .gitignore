@@ -2,3 +2,7 @@ node_modules
 .vscode-test/
 *.vsix
 .vscode
+package.json
+icons
+.yarnrc
+vsc-extension-quickstart.md
