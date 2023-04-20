@@ -48,10 +48,10 @@
           },
           "commentsai.model": {
             "type": "string",
-            "default": "gpt-3.5-turbo",
+            "default": "text-davinci-003",
             "description": "Model to use for generating comments.",
             "enum": [
-              "gpt-3.5-turbo",
+              "text-davinci-002",
               "text-davinci-003"
             ]
           },
@@ -64,6 +64,12 @@
             "type": "number",
             "default": 0.5,
             "description": "Creativity of the model (lower value means more consistent responses)."
+          },
+          "commentsai.commentColor": {
+            "type": "string",
+            "default": "#00FF00",
+            "description": "Color of the generated comments.",
+            "scope": "resource"
           }
         }
       }

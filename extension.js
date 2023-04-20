@@ -28,7 +28,7 @@ async function commentCode(code, language) {
     });
     // Récupère le commentaire généré et le retourne
     const rawComment = completion.data.choices[0].text.trim();
-    return `${rawComment}`;
+    return `/${rawComment}`;
   } catch (error) {
     // Gère les erreurs
     if (error.response) {
@@ -48,7 +48,9 @@ async function commentCode(code, language) {
  */
 async function processCode(code, language) {
   // Regex pour identifier les fonctions dans le code
-  const regex = /(function\s+\w+\s*\([^)]*\)\s*{[^}]*})/g;
+  const regex = /(function\s+\w+\s*\([^)]*\)\s*{[^}]*})/g; // fonctionne !
+  // (Ajouter pour python regex = /(def\s+\w+\s*\([^)]*\)\s*{[^}]*})/g. )    à tester
+  // Ajouter regex pour const, var, let, function, class = /(const|var|let|function|class)\s+\w+\s*\([^)]*\)\s*{[^}]*}/g    à tester
   let match;
   let commentedCode = code;
   const insertions = [];
@@ -84,7 +86,7 @@ async function processCode(code, language) {
  * @param {{ subscriptions: vscode.Disposable[]; }} context
  */
 function activate(context) {
-  console.log('I feel good honey !');
+  console.log("I feel good honey !");
   // Enregistre la commande "commentsai.commentCode" et sa fonction de rappel
   let disposable = vscode.commands.registerCommand(
     "commentsai.commentCode",
