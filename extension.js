@@ -56,29 +56,24 @@ async function processCode(code, language) {
     return code;
   }
 
-  // Regex pour identifier les fonctions et les classes dans le code, en capturant le mot-clé "export"
+  // Regex pour identifier les fonctions, les classes, les 'const' et les 'let' dans le code
   const regex =
     /(?<!<)(const|let|function|class)\s+\w+\s*(?:\([^)]*\))?\s*(?:{[^}]*})?(?!>)/g;
   let match;
   let commentedCode = code;
   const insertions = [];
 
-  // Boucle pour trouver les fonctions et les classes et générer des commentaires pour elles
+  // Boucle pour trouver les fonctions, classes, const et let, et générer des commentaires pour eux
   while ((match = regex.exec(code)) !== null) {
     const codeBlock = match[0];
     const codeBlockStartIndex = match.index;
 
-    // Vérifie si le code à commenter est une fonction ou une classe
-    if (
-      /^(function|class)\b/.test(codeBlock) ||
-      (language === "javascriptreact" && codeBlock.includes("return ("))
-    ) {
-      const comment = await commentCode(codeBlock, language);
+    // Ajoute des commentaires pour les fonctions, classes, const et let
+    const comment = await commentCode(codeBlock, language);
 
-      // Stocke l'index et le commentaire pour une insertion ultérieure
-      if (comment) {
-        insertions.push({ index: codeBlockStartIndex, comment });
-      }
+    // Stocke l'index et le commentaire pour une insertion ultérieure
+    if (comment) {
+      insertions.push({ index: codeBlockStartIndex, comment });
     }
   }
 
@@ -96,6 +91,7 @@ async function processCode(code, language) {
   // Retourne le code commenté
   return commentedCode;
 }
+
 
 // Fonction pour activer l'extension vscode
 /**
