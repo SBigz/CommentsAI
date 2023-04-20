@@ -18,7 +18,7 @@ async function commentCode(code, language) {
     // Crée une requête d'achèvement avec le modèle, le code et la langue
     const completion = await openai.createCompletion({
       model: vscode.workspace.getConfiguration("commentsai").get("model"),
-      prompt: `Analyze the following ${language} code:\n\n${code}, and add a concise one-line comment to it.`,
+      prompt: `Analyze the following ${language} code:\n\n${code}, and add concise description to it.`,
       max_tokens: vscode.workspace
         .getConfiguration("commentsai")
         .get("maxTokens"),
@@ -28,48 +28,64 @@ async function commentCode(code, language) {
     });
     // Récupère le commentaire généré et le retourne
     const rawComment = completion.data.choices[0].text.trim();
-    return `/${rawComment}`;
+    return `/* ${rawComment} */`;
   } catch (error) {
-    // Gère les erreurs
+    // Gère les erreurs et affiche le type d'erreur ainsi que le message d'erreur
     if (error.response) {
-      console.log(error.response.status);
+      console.log("HTTP error:", error.response.status);
       console.log(error.response.data);
     } else {
-      console.log(error.message);
+      console.log("Error:", error.message);
     }
     return null;
   }
 }
 
-// Fonction pour traiter le code et ajouter des commentaires aux fonctions
+// Fonction pour traiter le code et ajouter des commentaires aux fonctions et aux classes
 /**
  * @param {string} code
  * @param {string} language
  */
 async function processCode(code, language) {
-  // Regex pour identifier les fonctions dans le code
-  const regex = /(function\s+\w+\s*\([^)]*\)\s*{[^}]*})/g; // fonctionne !
-  // (Ajouter pour python regex = /(def\s+\w+\s*\([^)]*\)\s*{[^}]*})/g. )    à tester
-  // Ajouter regex pour const, var, let, function, class = /(const|var|let|function|class)\s+\w+\s*\([^)]*\)\s*{[^}]*}/g    à tester
+  if (
+    language !== "javascript" &&
+    language !== "typescriptreact" &&
+    language !== "javascriptreact"
+  ) {
+    console.log("Unsupported language:", language);
+    return code;
+  }
+
+  // Regex pour identifier les fonctions et les classes dans le code, en capturant le mot-clé "export"
+  const regex =
+    /(?<!<)(const|let|function|class)\s+\w+\s*(?:\([^)]*\))?\s*(?:{[^}]*})?(?!>)/g;
   let match;
   let commentedCode = code;
   const insertions = [];
 
-  // Boucle pour trouver les fonctions et générer des commentaires pour elles
+  // Boucle pour trouver les fonctions et les classes et générer des commentaires pour elles
   while ((match = regex.exec(code)) !== null) {
-    const funcCode = match[0];
-    const funcStartIndex = match.index;
-    const comment = await commentCode(funcCode, language);
+    const codeBlock = match[0];
+    const codeBlockStartIndex = match.index;
 
-    // Stocke l'index et le commentaire pour une insertion ultérieure
-    if (comment) {
-      insertions.push({ index: funcStartIndex, comment });
+    // Vérifie si le code à commenter est une fonction ou une classe
+    if (
+      /^(function|class)\b/.test(codeBlock) ||
+      (language === "javascriptreact" && codeBlock.includes("return ("))
+    ) {
+      const comment = await commentCode(codeBlock, language);
+
+      // Stocke l'index et le commentaire pour une insertion ultérieure
+      if (comment) {
+        insertions.push({ index: codeBlockStartIndex, comment });
+      }
     }
   }
 
-  // Insère les commentaires au-dessus des fonctions correspondantes
+  // Insère les commentaires au-dessus des fonctions, const, let, etc. correspondants
   for (let i = insertions.length - 1; i >= 0; i--) {
     const { index, comment } = insertions[i];
+
     commentedCode =
       commentedCode.slice(0, index) +
       comment +
@@ -102,7 +118,7 @@ function activate(context) {
       const code = document.getText();
       const language = document.languageId;
 
-      // Traite le code et ajoute des commentaires aux fonctions
+      // Traite le code et ajoute des commentaires aux fonctions et aux classes
       const commentedCode = await processCode(code, language);
 
       // Si le code commenté est généré avec succès, remplace le code d'origine par le code commenté
