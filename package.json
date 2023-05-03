@@ -55,9 +55,14 @@
               "text-davinci-003"
             ]
           },
+          "commentsai.language": {
+            "type": "string",
+            "default": "english",
+            "description": "Language to use for generating comments."
+          },
           "commentsai.maxTokens": {
             "type": "number",
-            "default": 100,
+            "default": 200,
             "description": "Maximum number of tokens for the generated comment."
           },
           "commentsai.temperature": {

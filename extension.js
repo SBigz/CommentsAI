@@ -14,11 +14,16 @@ const openai = new OpenAIApi(configuration);
  * @param {string} language
  */
 async function commentCode(code, language) {
+  // Récupère la langue sélectionnée dans les paramètres
+  const commentLanguage = vscode.workspace
+    .getConfiguration("commentsai")
+    .get("language");
+
   try {
-    // Crée une requête d'achèvement avec le modèle, le code et la langue
+    // Crée une requête d'achèvement avec le modèle, le code, la langue et la langue des commentaires
     const completion = await openai.createCompletion({
       model: vscode.workspace.getConfiguration("commentsai").get("model"),
-      prompt: `Analyze the following ${language} code:\n\n${code}, and add concise description to it.`,
+      prompt: `Analyze the following ${language} code:\n\n${code}, and add a short ${commentLanguage} description to it. Don't produce any code, just explain.`,
       max_tokens: vscode.workspace
         .getConfiguration("commentsai")
         .get("maxTokens"),
@@ -41,57 +46,102 @@ async function commentCode(code, language) {
   }
 }
 
+const languageRegexes = {
+  javascript: {
+    class: /class\s+\w+\s*(?:extends\s+\w+\s*)?\{[^}]*\}/g,
+    function: /function\s+\w+\s*\([^)]*\)\s*\{[^}]*\}/g,
+    let: /let\s+\w+\s*(?:=\s*[^;]*)?;/g,
+    const: /const\s+\w+\s*(?:=\s*[^;]*)?;/g,
+    var: /var\s+\w+\s*(?:=\s*[^;]*)?;/g,
+  },
+  jsx: {
+    classComponent: /class\s+\w+\s*extends\s+React\.Component\s*\{[^}]*\}/g,
+    functionComponent:
+      /(?:const|function)\s+\w+\s*=\s*\((?:[^)]*\))?\)\s*=>\s*\{[^}]*\}/g,
+    exportDefault:
+      /export\s+default\s+(?:class|function|const)\s+\w+\s*(?:\([^)]*\))?\s*(?:{[^}]*})?(?!>)/g,
+  },
+  typescript: {
+    class:
+      /class\s+\w+\s*(?:extends\s+\w+\s*)?(?:implements\s+[\w\s,]+)?\{[^}]*\}/g,
+    function: /function\s+\w+\s*\([^)]*\)\s*(?::\s*[^{]*)?\{[^}]*\}/g,
+    let: /let\s+\w+\s*(?::\s*[^=]*)?\s*(?:=\s*[^;]*)?;/g,
+    const: /const\s+\w+\s*(?::\s*[^=]*)?\s*(?:=\s*[^;]*)?;/g,
+    var: /var\s+\w+\s*(?::\s*[^=]*)?\s*(?:=\s*[^;]*)?;/g,
+    interface: /interface\s+\w+\s*(?:extends\s+[\w\s,]+)?\{[^}]*\}/g,
+    typeAlias: /type\s+\w+\s*=\s*[^;]*;/g,
+  },
+  tsx: {
+    classComponent:
+      /class\s+\w+\s*extends\s+React\.Component\s*<[^>]*>\s*\{[^}]*\}/g,
+    functionComponent:
+      /(?:const|function)\s+\w+\s*=\s*\((?:[^)]*\))?\)\s*:\s*React\.FC\s*<[^>]*>\s*=>\s*\{[^}]*\}/g,
+    exportDefault:
+      /export\s+default\s+(?:class|function|const)\s+\w+\s*(?:\([^)]*\))?\s*(?:{[^}]*})?(?!>)/g,
+  },
+};
+
 // Fonction pour traiter le code et ajouter des commentaires aux fonctions et aux classes
 /**
  * @param {string} code
  * @param {string} language
  */
 async function processCode(code, language) {
-  if (
-    language !== "javascript" &&
-    language !== "typescriptreact" &&
-    language !== "javascriptreact"
-  ) {
+  if (!languageRegexes[language]) {
     console.log("Unsupported language:", language);
     return code;
   }
 
-  // Regex pour identifier les fonctions, les classes, les 'const' et les 'let' dans le code
-  const regex =
-    /(?<!<)(const|let|function|class)\s+\w+\s*(?:\([^)]*\))?\s*(?:{[^}]*})?(?!>)/g;
-  let match;
   let commentedCode = code;
   const insertions = [];
 
-  // Boucle pour trouver les fonctions, classes, const et let, et générer des commentaires pour eux
-  while ((match = regex.exec(code)) !== null) {
-    const codeBlock = match[0];
-    const codeBlockStartIndex = match.index;
+  // Boucle pour chaque type de regex dans le langage spécifique
+  for (const regexType in languageRegexes[language]) {
+    const regex = languageRegexes[language][regexType];
+    let match;
 
-    // Ajoute des commentaires pour les fonctions, classes, const et let
-    const comment = await commentCode(codeBlock, language);
+    // Boucle pour trouver les éléments correspondants et générer des commentaires pour eux
+    while ((match = regex.exec(code)) !== null) {
+      const codeBlock = match[0];
+      const codeBlockStartIndex = match.index;
 
-    // Stocke l'index et le commentaire pour une insertion ultérieure
-    if (comment) {
-      insertions.push({ index: codeBlockStartIndex, comment });
+      // Ajoute des commentaires pour les éléments correspondants
+      const comment = await commentCode(codeBlock, language);
+
+      // Stocke l'index et le commentaire pour une insertion ultérieure
+      if (comment) {
+        insertions.push({ index: codeBlockStartIndex, comment });
+      }
     }
   }
 
-  // Insère les commentaires au-dessus des fonctions, const, let, etc. correspondants
+  // Insère les commentaires au-dessus des éléments correspondants
   for (let i = insertions.length - 1; i >= 0; i--) {
     const { index, comment } = insertions[i];
 
-    commentedCode =
-      commentedCode.slice(0, index) +
-      comment +
-      "\n" +
-      commentedCode.slice(index);
+    // Vérifie si "export default" précède la fonction
+    const exportDefaultIndex = code.lastIndexOf("export default", index);
+
+    if (exportDefaultIndex !== -1 && exportDefaultIndex > index - 20) {
+      // Si "export default" précède la fonction, insère le commentaire avant "export default"
+      commentedCode =
+        commentedCode.slice(0, exportDefaultIndex) +
+        comment +
+        "\n" +
+        commentedCode.slice(exportDefaultIndex);
+    } else {
+      // Sinon, insère le commentaire au-dessus de la fonction ou de la classe
+      commentedCode =
+        commentedCode.slice(0, index) +
+        comment +
+        "\n" +
+        commentedCode.slice(index);
+    }
   }
 
   // Retourne le code commenté
   return commentedCode;
 }
-
 
 // Fonction pour activer l'extension vscode
 /**
