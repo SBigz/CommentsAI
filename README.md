@@ -23,9 +23,7 @@ Don't hesitate to report your bugs in the issues, I would be happy to resolve th
 2. Enter your OpenAI API key in the extension settings
 3. Configure the extension settings according to your preferences, such as the AI model, generation parameters, and comment language
 4. Open a code file in Visual Studio Code
-5. Click the "Comment Code" button in the toolbar at the top right of the editor
-
-![Comments-AI Preview](./preview.png)
+5. Click the !["Comment Code" button](./preview.png) in the toolbar at the top right of the editor
 6. AI-generated comments will be automatically inserted above each detected function in your code
 
 ## Configuration
