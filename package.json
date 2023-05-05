@@ -2,7 +2,7 @@
   "name": "commentsai",
   "displayName": "CommentsAI",
   "description": "Generate commentaries automatically directly to your code",
-  "icon": "./icons/LipsIcon.jpg",
+  "icon": "./icons/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/SBigz/commentsai.git"
@@ -12,7 +12,7 @@
     "vscode": "^1.77.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages"
   ],
   "activationEvents": [],
   "main": "./extension.js",
@@ -23,8 +23,8 @@
         "title": "Comment Code",
         "category": "CommentsAI",
         "icon": {
-          "light": "/icons/icons8-lips-60_black.png",
-          "dark": "/icons/icons8-lips-60_white.png"
+          "light": "./icons/icon.svg",
+          "dark": "./icons/icon.svg"
         }
       }
     ],

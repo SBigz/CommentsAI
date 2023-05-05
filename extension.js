@@ -164,21 +164,32 @@ function activate(context) {
       const code = document.getText();
       const language = document.languageId;
 
-      // Traite le code et ajoute des commentaires aux fonctions et aux classes
-      const commentedCode = await processCode(code, language);
+      // Affiche la fenêtre de progression avec le texte "processing..."
+      await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: "Processing... └[∵┌]└[ ∵ ]┘[┐∵]┘",
+          cancellable: false,
+        },
+        async () => {
+          // Traite le code et ajoute des commentaires aux fonctions et aux classes
+          const commentedCode = await processCode(code, language);
 
-      // Si le code commenté est généré avec succès, remplace le code d'origine par le code commenté
-      if (commentedCode) {
-        editor.edit((editBuilder) => {
-          const startPosition = new vscode.Position(0, 0);
-          const endPosition = document.lineAt(document.lineCount - 1).range.end;
-          const fullRange = new vscode.Range(startPosition, endPosition);
-          editBuilder.replace(fullRange, commentedCode);
-        });
-      } else {
-        // Affiche un message d'erreur si la génération de commentaires échoue
-        vscode.window.showErrorMessage("Unable to generate comments.");
-      }
+          // Si le code commenté est généré avec succès, remplace le code d'origine par le code commenté
+          if (commentedCode) {
+            editor.edit((editBuilder) => {
+              const startPosition = new vscode.Position(0, 0);
+              const endPosition = document.lineAt(document.lineCount - 1).range
+                .end;
+              const fullRange = new vscode.Range(startPosition, endPosition);
+              editBuilder.replace(fullRange, commentedCode);
+            });
+          } else {
+            // Affiche un message d'erreur si la génération de commentaires échoue
+            vscode.window.showErrorMessage("Unable to generate comments.");
+          }
+        }
+      );
     }
   );
 
