@@ -14,6 +14,9 @@ Comments-AI is an extension for Visual Studio Code that uses artificial intellig
 - Works with multiple programming languages
 - Supports comment generation in multiple languages
 
+Tested with JavaScript, HTML, CSS, and Python. Supports React, sometimes buggy with TypeScript.
+Don't hesitate to report your bugs in the issues, I would be happy to resolve them with you!
+
 ## How to Use Comments-AI
 
 1. Install the Comments-AI extension from the Visual Studio Code Marketplace
