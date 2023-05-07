@@ -3,6 +3,7 @@
   "displayName": "CommentsAI",
   "description": "Generate commentaries automatically directly to your code",
   "icon": "./icons/icon.png",
+  "publisher": "CodeSacha",
   "repository": {
     "type": "git",
     "url": "https://github.com/SBigz/commentsai.git"
@@ -23,8 +24,8 @@
         "title": "Comment Code",
         "category": "CommentsAI",
         "icon": {
-          "light": "./icons/icon.png",
-          "dark": "./icons/icon.png"
+          "light": "./icons/icon128.png",
+          "dark": "./icons/icon128.png"
         }
       }
     ],
