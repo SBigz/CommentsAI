@@ -4,6 +4,12 @@
   "description": "Generate commentaries automatically directly to your code",
   "icon": "./icons/icon.png",
   "publisher": "CodeSacha",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "homepage": "https://github.com/SBigz/CommentsAI/blob/main/README.md",
+  "bugs": {
+    "url": "https://github.com/SBigz/CommentsAI/issues",
+    "email": "contact@codesacha.xyz"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/SBigz/commentsai.git"
@@ -13,7 +19,7 @@
     "vscode": "^1.77.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages", "Snippets", "Other"
   ],
   "activationEvents": [],
   "main": "./extension.js",

@@ -1,6 +1,6 @@
 # Comments-AI
 
-![Comments-AI Banner](./banner.png)
+![Comments-AI Banner](https://github.com/SBigz/CommentsAI/blob/main/banner.png)
 
 **Automatically generate insightful comments for your code directly in Visual Studio Code.**
 
@@ -25,7 +25,7 @@ Don't hesitate to report your bugs in the issues, I would be happy to resolve th
 4. Open a code file in Visual Studio Code
 5. Click the "Comment Code" button in the toolbar at the top right of the editor
 6. AI-generated comments will be automatically inserted above each detected function in your code
-![Comments-AI Preview](./preview.png)
+![Comments-AI Preview](https://github.com/SBigz/CommentsAI/blob/main/preview.png)
 
 ## Configuration
 
