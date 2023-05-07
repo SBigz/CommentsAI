@@ -2,7 +2,7 @@
   "name": "commentsai",
   "displayName": "CommentsAI",
   "description": "Generate commentaries automatically directly to your code",
-  "icon": "./icons/icon.png",
+  "icon": "./icon.png",
   "publisher": "CodeSacha",
   "license": "SEE LICENSE IN LICENSE.txt",
   "homepage": "https://github.com/SBigz/CommentsAI/blob/main/README.md",
