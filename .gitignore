@@ -2,6 +2,6 @@ node_modules
 .vscode-test/
 *.vsix
 .vscode
-package.json
 icons
 .yarnrc
+.commentsai-0.0.1.vsix
