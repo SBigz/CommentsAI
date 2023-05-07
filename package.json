@@ -23,8 +23,8 @@
         "title": "Comment Code",
         "category": "CommentsAI",
         "icon": {
-          "light": "./icons/icon.svg",
-          "dark": "./icons/icon.svg"
+          "light": "./icons/icon.png",
+          "dark": "./icons/icon.png"
         }
       }
     ],
