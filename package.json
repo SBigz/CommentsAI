@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/SBigz/commentsai.git"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.77.0"
   },
