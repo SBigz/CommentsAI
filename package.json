@@ -1,6 +1,6 @@
 {
-  "name": "commentsai",
-  "displayName": "CommentsAI",
+  "name": "smartcommentai",
+  "displayName": "SmartCommentAI",
   "description": "Generate commentaries automatically directly to your code",
   "icon": "./icon.png",
   "publisher": "CodeSacha",
@@ -30,7 +30,7 @@
       {
         "command": "commentsai.commentCode",
         "title": "Comment Code",
-        "category": "CommentsAI",
+        "category": "SmartCommentAI",
         "icon": {
           "light": "./icon.png",
           "dark": "./icon.png"
@@ -48,7 +48,7 @@
     },
     "configuration": [
       {
-        "title": "CommentsAI",
+        "title": "SmartCommentAI",
         "properties": {
           "commentsai.apiKey": {
             "type": "string",
