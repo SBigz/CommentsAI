@@ -32,8 +32,8 @@
         "title": "Comment Code",
         "category": "CommentsAI",
         "icon": {
-          "light": "./icons/icon128.png",
-          "dark": "./icons/icon128.png"
+          "light": "./icons/icon.png",
+          "dark": "./icons/icon.png"
         }
       }
     ],
