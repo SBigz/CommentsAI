@@ -23,7 +23,7 @@ async function commentCode(code, language) {
     // Crée une requête d'achèvement avec le modèle, le code, la langue et la langue des commentaires
     const completion = await openai.createCompletion({
       model: vscode.workspace.getConfiguration("commentsai").get("model"),
-      prompt: `Analyze the following ${language} code:\n\n${code}, and add a short ${commentLanguage} description to it. Don't produce any code, just explain.`,
+      prompt: `Analyze the following ${language} code:\n\n${code}, and add a short ${commentLanguage} description to it. Don't produce any code, just explain. Ignore any import and dependency statements such as "import" and "require. Don't add /* and */ around the comment."`,
       max_tokens: vscode.workspace
         .getConfiguration("commentsai")
         .get("maxTokens"),
